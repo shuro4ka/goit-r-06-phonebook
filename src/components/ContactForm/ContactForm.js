@@ -3,12 +3,15 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { nanoid } from '@reduxjs/toolkit';
 import { addContact } from 'redux/contactsSlice';
+import { useSelector } from 'react-redux';
+import { selectContacts } from 'redux/contactsSlice';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
 
   const handleChange = e => {
     const name = e.target.name;
@@ -22,6 +25,16 @@ export const ContactForm = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
+
+    const index = contacts.findIndex(contact => contact.name.toLowerCase() === name.toLowerCase());
+
+    if(index >= 0) {
+      alert(`Contact ${name} already exsist!`);
+      setName('');
+      setNumber('');
+      return;
+    }
+
     const contact = {
       name: name,
       number: number,
